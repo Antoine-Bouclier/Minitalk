@@ -6,71 +6,72 @@
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:30:56 by abouclie          #+#    #+#             */
-/*   Updated: 2025/01/23 12:41:22 by abouclie         ###   ########.fr       */
+/*   Updated: 2025/02/26 11:04:11 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+#include "libft/libft.h"
 
+/*
+	Used to know if the server 
+	received the signal
+*/
+static volatile sig_atomic_t	g_ser_received = 0;
 
-#include "minitalk.h"
-
-void    char_to_binary2(char c, char *binary)
+void	ser_received(int sig)
 {
-    int i;
-    int j;
-
-    i = 128;
-    j = 0;
-    while (j < 8)
-    {
-        binary[j] = (c & i) ? '1' : '0';
-        j++;
-        i /= 2;
-    }
-    binary[8] = '\0';
+	(void)sig;
+	g_ser_received = 1;
 }
 
-void    send_msg(int pid, char *msg)
+void	atob(char c, int pid)
 {
-    char    binary[9];
-    int     i;
+	int	i;
+	int	j;
 
-    while (*msg)
+	i = 128;
+	j = 0;
+	while (j < 8)
 	{
-        i = 0;
-        printf("Sending char: %c\n", *msg);
-		char_to_binary2(*msg, binary);
-        printf("Binary: %s\n", binary);
-        while (i < 8)
-        {
-            if (binary[i] == '1')
-                kill(pid, SIGUSR1);
-            else
-                kill(pid, SIGUSR2);
-            usleep(500);
-            i++;
-        }
+		g_ser_received = 0;
+		if (c & i)
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		while (!g_ser_received)
+			pause();
+		j++;
+		i /= 2;
+	}
+}
+
+void	send_msg(int pid, char *msg)
+{
+	while (*msg)
+	{
+		atob(*msg, pid);
 		msg++;
 	}
 }
 
-
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	int	i;
+	int	pid;
 
-	i = 0;
 	if (argc != 3)
-		exit(write(1, "Error: Wrong format.", 20));
-	while (argv[1][i] != '\0')
 	{
-		if (argv[1][i] < '0' || argv[1][i] > '9')
-			exit(write(1, "ERROR: PID invalid!\n", 20));
-		i++;
+		ft_printf("Error: Wrong format.\n");
+		exit(EXIT_FAILURE);
 	}
-	send_msg(ft_atoi(argv[1]), argv[2]);
-	send_msg(ft_atoi(argv[1]), "\n");
-	if (argv[1][i] == '\0')
-		write(1, "Message sent!\n", 14);
+	pid = atoi(argv[1]);
+	if (kill(pid, 0) == -1)
+	{
+		ft_printf("Error: PID invalid!\n");
+		exit(EXIT_FAILURE);
+	}
+	signal(SIGUSR1, ser_received);
+	send_msg(pid, argv[2]);
+	send_msg(pid, "\n");
 	return (0);
 }
