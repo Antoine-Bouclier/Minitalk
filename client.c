@@ -6,7 +6,7 @@
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:30:56 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 11:04:11 by abouclie         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:31:24 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	send_msg(int pid, char *msg)
 		atob(*msg, pid);
 		msg++;
 	}
+	atob('\0', pid);
 }
 
 int	main(int argc, char **argv)
