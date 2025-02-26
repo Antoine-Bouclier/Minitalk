@@ -6,26 +6,34 @@
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:30:56 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 15:31:24 by abouclie         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:54:00 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "libft/libft.h"
 
-/*
-	Used to know if the server 
-	received the signal
-*/
+/**
+ * @brief Global flag indicating signal receipt
+ */
 static volatile sig_atomic_t	g_ser_received = 0;
 
+/**
+ * @brief Signal handler for acknowledgment
+ * @param sig Received signal (unused)
+ */
 void	ser_received(int sig)
 {
 	(void)sig;
 	g_ser_received = 1;
 }
 
-void	atob(char c, int pid)
+/**
+ * @brief Sends a character bit by bit
+ * @param c Character to send
+ * @param pid Recipient process ID
+ */
+void	char_to_bits(char c, int pid)
 {
 	int	i;
 	int	j;
@@ -46,16 +54,27 @@ void	atob(char c, int pid)
 	}
 }
 
+/**
+ * @brief Sends a string message
+ * @param pid Recipient process ID
+ * @param msg Message to send
+ */
 void	send_msg(int pid, char *msg)
 {
 	while (*msg)
 	{
-		atob(*msg, pid);
+		char_to_bits(*msg, pid);
 		msg++;
 	}
-	atob('\0', pid);
+	char_to_bits('\0', pid);
 }
 
+/**
+ * @brief Main function for the client
+ * @param argc Argument count
+ * @param argv Argument vector
+ * @return int Exit status
+ */
 int	main(int argc, char **argv)
 {
 	int	pid;

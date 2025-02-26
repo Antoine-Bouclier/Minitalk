@@ -6,13 +6,24 @@
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 10:38:46 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 15:34:59 by abouclie         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:48:51 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "libft/libft.h"
 
+/**
+ * @brief Adds a character to the message.
+ * 
+ * Allocates memory for a new message, appends
+ * the character, and frees the old message.
+ * 
+ * @param old_message Existing message (can be NULL).
+ * @param c Character to add.
+ * @param len Pointer to the current message length.
+ * @return char* Updated message.
+ */
 static char	*update_message(char *old_message, char c, int *len)
 {
 	char	*new_message;
@@ -35,6 +46,16 @@ static char	*update_message(char *old_message, char c, int *len)
 	return (new_message);
 }
 
+/**
+ * @brief Handles SIGUSR1 and SIGUSR2 signals.
+ * 
+ * Reconstructs the message bit by bit 
+ * and sends an acknowledgment signal.
+ * 
+ * @param sig Signal received.
+ * @param info Signal information.
+ * @param context Signal context (unused).
+ */
 static void	handle_signal(int sig, siginfo_t *info, void *context)
 {
 	static int	bit = 0;
@@ -63,6 +84,13 @@ static void	handle_signal(int sig, siginfo_t *info, void *context)
 	kill(info->si_pid, SIGUSR1);
 }
 
+/**
+ * @brief Server main function.
+ * 
+ * Sets up signal handlers and waits
+ * for signals in an infinite loop.
+ * 
+ */
 int	main(void)
 {
 	struct sigaction	sa;
