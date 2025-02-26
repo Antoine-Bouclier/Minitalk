@@ -6,21 +6,41 @@
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 10:38:46 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 12:18:10 by abouclie         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:34:59 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "libft/libft.h"
 
-#define BUFFER_SIZE 1024
+static char	*update_message(char *old_message, char c, int *len)
+{
+	char	*new_message;
+
+	new_message = malloc(*len + 2);
+	if (!new_message)
+	{
+		ft_printf("Error! Memory allocation failed.\n");
+		free(old_message);
+		exit(EXIT_FAILURE);
+	}
+	if (old_message)
+	{
+		ft_memcpy(new_message, old_message, *len);
+		free(old_message);
+	}
+	new_message[*len] = c;
+	new_message[*len + 1] = '\0';
+	(*len)++;
+	return (new_message);
+}
 
 static void	handle_signal(int sig, siginfo_t *info, void *context)
 {
 	static int	bit = 0;
 	static char	c = 0;
-	static char buffer[BUFFER_SIZE];
-	static int	index = 0;
+	static char	*message = NULL;
+	static int	len = 0;
 
 	(void)context;
 	if (sig == SIGUSR1)
@@ -30,20 +50,13 @@ static void	handle_signal(int sig, siginfo_t *info, void *context)
 	{
 		if (c == '\0')
 		{
-			buffer[index] = '\0';
-			ft_printf("%s", buffer);
-			index = 0;
+			ft_printf("%s", message);
+			free(message);
+			message = NULL;
+			len = 0;
 		}
-		else if (index < BUFFER_SIZE - 1)
-		{
-			buffer[index++] = c;
-			if (c == '\n')
-			{
-				buffer[index] = '\0';
-				ft_printf("%s", buffer);
-				index = 0;
-			}
-		}
+		else
+			message = update_message(message, c, &len);
 		bit = 0;
 		c = 0;
 	}
@@ -66,5 +79,3 @@ int	main(void)
 		pause();
 	return (0);
 }
-
-
