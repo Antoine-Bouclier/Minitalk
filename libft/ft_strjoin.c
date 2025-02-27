@@ -5,35 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 08:35:42 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/20 08:40:33 by abouclie         ###   ########.fr       */
+/*   Created: 2024/11/12 10:50:48 by abouclie          #+#    #+#             */
+/*   Updated: 2024/11/27 10:06:22 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char *s1, char *s2, ssize_t b_read)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*str;
-	char	*res;
-	ssize_t	i;
+	char	*dest;
+	int		i;
+	int		j;
 
 	i = 0;
-	if (!s1)
-		return ((char *)s2);
-	if (!s2)
-		return ((char *)s1);
-	str = malloc(ft_strlen(s1) + b_read + 1);
-	if (!str)
-		return (free(str), NULL);
-	res = str;
-	while (*s1)
-		*str++ = *s1++;
-	while (*s2 && i < b_read)
+	j = 0;
+	if (s1 == NULL && s2 == NULL)
+		return (NULL);
+	if (s1 == NULL)
+		return (ft_strdup(s2));
+	if (s2 == NULL)
+		return (ft_strdup(s1));
+	dest = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!dest)
+		return (NULL);
+	while ((unsigned long)i < ft_strlen(s1) + ft_strlen(s2))
 	{
-		*str++ = *s2++;
-		i++;
+		while (s1[j] != '\0')
+			dest[i++] = s1[j++];
+		j = 0;
+		while (s2[j] != '\0')
+			dest[i++] = s2[j++];
 	}
-	*str = '\0';
-	return (res);
+	dest[i] = '\0';
+	return (dest);
 }

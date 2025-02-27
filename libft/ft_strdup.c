@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 08:36:31 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/20 08:40:36 by abouclie         ###   ########.fr       */
+/*   Created: 2024/11/12 09:45:22 by abouclie          #+#    #+#             */
+/*   Updated: 2025/02/27 07:52:39 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ char	*ft_strdup(const char *s)
 	char	*dest;
 
 	dest = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
-	if (!dest)
-		return (NULL);
+	if (dest == 0)
+		return (0);
 	i = 0;
 	while (s[i] != '\0')
 	{

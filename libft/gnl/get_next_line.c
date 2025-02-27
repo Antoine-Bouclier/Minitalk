@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 13:08:06 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 15:35:38 by abouclie         ###   ########.fr       */
+/*   Created: 2025/01/08 11:37:28 by abouclie          #+#    #+#             */
+/*   Updated: 2025/02/27 08:12:12 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
 static void	set_nextl(char *nextl)
 {
@@ -69,7 +69,7 @@ static char	*fill_line(char *line, char *nextl, int fd)
 			return (free(line), NULL);
 		}
 		tmp = line;
-		line = ft_strjoin(line, nextl, b_read);
+		line = ft_strjoin_gnl(line, nextl, b_read);
 		free(tmp);
 		if (!line)
 			return (NULL);
@@ -81,19 +81,19 @@ static char	*fill_line(char *line, char *nextl, int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	nextl[BUFFER_SIZE + 1] = "\0";
+	static char	nextl[1024][BUFFER_SIZE + 1];
 	char		*line;
 	char		*result;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = ft_strdup(nextl);
+	line = ft_strdup(nextl[fd]);
 	if (!line)
 		return (free(line), NULL);
-	line = fill_line(line, nextl, fd);
+	line = fill_line(line, nextl[fd], fd);
 	if (line == NULL)
 		return (NULL);
-	set_nextl(nextl);
+	set_nextl(nextl[fd]);
 	result = ft_strccpy(line);
 	return (free(line), result);
 }

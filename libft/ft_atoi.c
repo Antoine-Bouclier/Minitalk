@@ -5,34 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/26 09:13:27 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/26 10:00:02 by abouclie         ###   ########.fr       */
+/*   Created: 2024/11/12 09:53:44 by abouclie          #+#    #+#             */
+/*   Updated: 2024/11/27 12:57:38 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long int	ft_atoi(const char *nptr)
+int	ft_atoi(const char *nptr)
 {
-	long int	nb;
-	int			isneg;
-	int			i;
+	int					i;
+	int					sign;
+	unsigned long long	result;
 
-	nb = 0;
-	isneg = 1;
 	i = 0;
-	if (nptr[i] == '+')
+	sign = 1;
+	result = 0;
+	while (nptr[i] == ' ' || (nptr[i] >= 9 && nptr[i] <= 13))
 		i++;
-	else if (nptr[i] == '-')
+	if (nptr[i] == '+' || nptr[i] == '-')
 	{
-		isneg *= -1;
+		if (nptr[i] == '-')
+			sign = -1;
 		i++;
 	}
 	while (nptr[i] >= 48 && nptr[i] <= 57)
 	{
-		nb = (nb * 10) + (nptr[i] - '0');
+		result = result * 10 + (nptr[i] - 48);
+		if (result > __LONG_LONG_MAX__ && sign == -1)
+			return (0);
+		else if (result > __LONG_LONG_MAX__)
+			return (-1);
 		i++;
 	}
-	nb *= isneg;
-	return (nb);
+	return ((int)result * sign);
 }

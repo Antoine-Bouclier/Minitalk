@@ -1,41 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strccpy.c                                       :+:      :+:    :+:   */
+/*   ft_lstiter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouclie <abouclie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 08:37:53 by abouclie          #+#    #+#             */
-/*   Updated: 2025/02/20 08:38:05 by abouclie         ###   ########.fr       */
+/*   Created: 2024/11/21 11:04:44 by abouclie          #+#    #+#             */
+/*   Updated: 2024/11/25 13:32:38 by abouclie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strccpy(char *line)
+void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
-	int		i;
-	char	*tmp;
+	t_list	*tmp;
 
-	i = 0;
-	while (line[i] && line[i] != '\n')
-		i++;
-	if (line[i] == '\n')
-		i++;
-	tmp = malloc(sizeof(char) * i + 1);
-	if (!tmp)
-		return (NULL);
-	i = 0;
-	while (line[i] && line[i] != '\n')
+	tmp = lst;
+	while (tmp)
 	{
-		tmp[i] = line[i];
-		i++;
+		f(tmp->content);
+		tmp = tmp->next;
 	}
-	if (line[i] == '\n')
-	{
-		tmp[i] = line[i];
-		i++;
-	}
-	tmp[i] = '\0';
-	return (tmp);
 }
